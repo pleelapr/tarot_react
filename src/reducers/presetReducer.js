@@ -21,8 +21,8 @@ threeCard[2][2] = "2";
 threeCard[2][3] = "3";
 
 const initialState = {
-  presets: [],
-  presetName: [],
+  presets: [threeCard],
+  presetName: ["3-Card"],
 };
 
 const presetReducer = (state = initialState, action) => {

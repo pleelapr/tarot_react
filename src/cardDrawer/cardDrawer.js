@@ -23,6 +23,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import ViewCarouselIcon from '@material-ui/icons/ViewCarousel';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import "../App.css";
 
 var _ = require("lodash");
@@ -298,7 +300,7 @@ const CardDrawer = () => {
                   togglePresetSetting();
                 }}
               >
-                <ListItemText primary="Preset Setting" />
+                <ListItemText primary="Toggle Preset Setting" />
               </ListItem>
               <ListItem
                 id="pickCard"
@@ -308,6 +310,7 @@ const CardDrawer = () => {
                   handlePickCard();
                 }}
               >
+                <ListItemIcon>{<ViewCarouselIcon />}</ListItemIcon>
                 <ListItemText primary="Pick Card" />
               </ListItem>
             </List>
