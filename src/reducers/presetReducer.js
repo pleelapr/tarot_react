@@ -30,7 +30,8 @@ const presetReducer = (state = initialState, action) => {
     case "SAVE_PRESET":
       return {
         ...state,
-        presets: _.cloneDeep(state.presets).concat([_.cloneDeep(action.preset)]),
+        //presets: _.cloneDeep(state.presets).concat([_.cloneDeep(action.preset)]),
+        presets: action.presets,
         presetName: [...state.presetName, action.presetName],
       };
 

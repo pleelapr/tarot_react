@@ -79,15 +79,16 @@ for (var i = 0; i < templateArray.length; i++) {
 const CardDrawer = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  let presetsList = useSelector((state) => state.preset.presets);
+  let presetsList = JSON.parse(JSON.stringify(useSelector((state) => state.preset.presets)));
+  console.log(presetsList)
   let presetsNameList = useSelector((state) => state.preset.presetName);
-  let resultArray = _.cloneDeep(templateArray);
-  let stateArray = _.cloneDeep(templateArray);
-  const [stateResultArray, setStateResultArray] = useState(stateArray);
+  let resultArray = JSON.parse(JSON.stringify(templateArray));
+  let stateArray = JSON.parse(JSON.stringify(templateArray));
+  const [stateResultArray, setStateResultArray] = useState(resultArray);
   const [presetName, setPresetName] = useState("");
   const [presetSettingStatus, setPresetSettingStatus] = useState(true);
   const [stateSettingArray, setStateSettingArray] = useState(
-    _.cloneDeep(templateArray)
+    stateArray
   );
   const [value, setValue] = useState(0);
 
@@ -105,9 +106,12 @@ const CardDrawer = () => {
   function handleSave() {
     var index = presetsNameList.indexOf(presetName);
     if (index == -1) {
+      var newArray = JSON.parse(JSON.stringify(stateSettingArray));
+      console.log(presetsList);
+      console.log([...presetsList, newArray]);
       dispatch({
         type: "SAVE_PRESET",
-        preset: stateSettingArray,
+        presets: [...presetsList, newArray],
         presetName,
       });
     } else {
@@ -137,10 +141,9 @@ const CardDrawer = () => {
     }
   };
 
-  const selectPreset = (presetName) => {
-    var indexOfPreset = presetsNameList.indexOf(presetName);
-    setStateSettingArray(presetsList[indexOfPreset]);
-    setPresetName(presetName);
+  const selectPreset = (name, index) => {
+    setStateSettingArray(presetsList[index]);
+    setPresetName(name);
   };
 
   const togglePresetSetting = () => {
@@ -316,7 +319,7 @@ const CardDrawer = () => {
                   button
                   key={text}
                   onClick={(event) => {
-                    selectPreset(text);
+                    selectPreset(text, index);
                   }}
                 >
                   <ListItemText primary={text} />
