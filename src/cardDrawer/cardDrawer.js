@@ -92,8 +92,8 @@ const CardDrawer = () => {
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    localStorage.setItem("presetsNameList", JSON.stringify(presetsNameList));
-    localStorage.setItem("presetsList", JSON.stringify(presetsList));
+    sessionStorage.setItem("presetsNameList", JSON.stringify(presetsNameList));
+    sessionStorage.setItem("presetsList", JSON.stringify(presetsList));
   }, [presetsNameList, presetsList]);
 
   const settingArrayChange = (indexr, indexc) => (e) => {
