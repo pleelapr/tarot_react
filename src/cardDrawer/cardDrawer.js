@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Container from "@material-ui/core/Container";
-import { useHistory } from "react-router-dom";
+import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import colors from "../common/constants/colors";
 import TextField from "@material-ui/core/TextField";
 import { useSelector, useDispatch } from "react-redux";
 import tarot_link from "../common/constants/tarot_link";
 import styled from "styled-components";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -16,16 +15,15 @@ import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
-import { createStore } from "redux";
-import { Provider } from "react-redux";
-import rootReducer from "../reducers/rootReducer";
+import MenuIcon from "@material-ui/icons/Menu";
 import ListItemText from "@material-ui/core/ListItemText";
-import Paper from "@material-ui/core/Paper";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import clsx from "clsx";
 import ViewCarouselIcon from "@material-ui/icons/ViewCarousel";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Switch from "@material-ui/core/Switch";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import Container from "@material-ui/core/Container";
 import "../App.css";
 
 var _ = require("lodash");
@@ -40,7 +38,24 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginRight: drawerWidth,
+  },
+  title: {
+    flexGrow: 1,
+  },
+  hide: {
+    display: "none",
   },
   drawer: {
     width: drawerWidth,
@@ -49,13 +64,29 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
   },
-  drawerContainer: {
-    overflow: "auto",
-    marginTop: "5rem",
+  drawerHeader: {
+    display: "flex",
+    alignItems: "center",
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: "flex-start",
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginRight: -drawerWidth,
+  },
+  contentShift: {
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginRight: 0,
   },
 }));
 
@@ -82,6 +113,7 @@ for (var i = 0; i < templateArray.length; i++) {
 const CardDrawer = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const theme = useTheme();
   let presetsList = JSON.parse(
     JSON.stringify(useSelector((state) => state.preset.presets))
   );
@@ -93,7 +125,15 @@ const CardDrawer = () => {
   const [presetName, setPresetName] = useState("");
   const [presetSettingStatus, setPresetSettingStatus] = useState(true);
   const [stateSettingArray, setStateSettingArray] = useState(stateArray);
-  const [value, setValue] = useState(0);
+  const [open, setOpen] = React.useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     dispatch({
@@ -281,105 +321,135 @@ const CardDrawer = () => {
   );
 
   return (
-    <>
-      <AppBar position="fixed" className={classes.appBar}>
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
         <Toolbar>
-          <Typography variant="h5" component="h5">
-            Tarot Flex
+          <Typography variant="h6" noWrap className={classes.title}>
+            Tarot React { (presetName) ? ": " + presetName : "" }
           </Typography>
-          {/* <IconButton
-              aria-label="more"
-              aria-controls="long-menu"
-              aria-haspopup="true"
-              onClick={handleClick}
-              color="inherit"
-            >
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="fade-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={open}
-              onClose={handleClose}
-              TransitionComponent={Fade}
-            >
-              <MenuItem onClick={handleClose}>Preset Setting</MenuItem>
-              <MenuItem onClick={handleClose}>Pick Card</MenuItem>
-            </Menu> */}
+          <IconButton
+            color="inherit"
+            
+            onClick={handlePickCard}
+          >
+            <ViewCarouselIcon />
+          </IconButton>
+          <Switch
+              checked={presetSettingStatus}
+              style={{ marginRight:"2rem"}}
+              name="checkedB"
+              inputProps={{ "aria-label": "primary checkbox" }}
+              onChange={togglePresetSetting}
+            />
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="end"
+            onClick={handleDrawerOpen}
+            className={clsx(open && classes.hide)}
+          >
+            <MenuIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: open,
+        })}
+      >
+        <div className={classes.drawerHeader} />
+        <Container maxWidth="sm">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {presetSettingStatus && presetSettingComp}
+            {resultTable}
+          </div>
+        </Container>
+      </main>
+
+      <Drawer
+        className={classes.drawer}
+        variant="persistent"
+        anchor="right"
+        open={open}
+        classes={{
+          paper: classes.drawerPaper,
         }}
       >
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.drawerContainer}>
-            <List>
-              <ListItem
-                id="presetSetting"
-                button
-                key="Preset Setting"
-                onClick={(event) => {
-                  togglePresetSetting();
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === "rtl" ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
+          </IconButton>
+        </div>
+        <Divider />
+        <List>
+          <ListItem
+            id="presetSetting"
+            button
+            key="Preset Setting"
+            onClick={(event) => {
+              togglePresetSetting();
+            }}
+          >
+            <Switch
+              checked={presetSettingStatus}
+              color="primary"
+              name="checkedB"
+              inputProps={{ "aria-label": "primary checkbox" }}
+            />
+            <ListItemText primary="Toggle Preset Setting" />
+          </ListItem>
+          <ListItem
+            id="pickCard"
+            button
+            key="Pick Card"
+            onClick={(event) => {
+              handlePickCard();
+            }}
+          >
+            <ListItemIcon>{<ViewCarouselIcon />}</ListItemIcon>
+            <ListItemText primary="Pick Card" />
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          {presetsNameList.map((text, index) => (
+            <ListItem
+              id={index}
+              button
+              key={text}
+              onClick={(event) => {
+                selectPreset(text, index);
+              }}
+            >
+              <ListItemText
+                primary={text}
+                style={{
+                  color: presetName === text ? colors.blue : colors.black,
                 }}
-              >
-                <Switch
-                  checked={presetSettingStatus}
-                  color="primary"
-                  name="checkedB"
-                  inputProps={{ "aria-label": "primary checkbox" }}
-                />
-                <ListItemText primary="Toggle Preset Setting" />
-              </ListItem>
-              <ListItem
-                id="pickCard"
-                button
-                key="Pick Card"
-                onClick={(event) => {
-                  handlePickCard();
-                }}
-              >
-                <ListItemIcon>{<ViewCarouselIcon />}</ListItemIcon>
-                <ListItemText primary="Pick Card" />
-              </ListItem>
-            </List>
-            <Divider />
-            <List>
-              {presetsNameList.map((text, index) => (
-                <ListItem
-                  id={index}
-                  button
-                  key={text}
-                  onClick={(event) => {
-                    selectPreset(text, index);
-                  }}
-                >
-                  <ListItemText
-                    primary={text}
-                    style={{
-                      color: presetName === text ? colors.blue : colors.black,
-                    }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </div>
-        </Drawer>
-        {presetSettingStatus && presetSettingComp}
-        {resultTable}
-      </div>
-    </>
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+    </div>
   );
 };
 

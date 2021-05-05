@@ -23,80 +23,12 @@ import Fade from "@material-ui/core/Fade";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerContainer: {
-    overflow: 'auto',
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-}));
-
 export default () => {
   const store = createStore(rootReducer);
-  const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handlePresetSetting = () => {
-  }
 
   return (
     <Provider store={store}>
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-            <Typography variant="h5" component="h5">
-            Tarot Flex
-            </Typography>
-            {/* <IconButton
-              aria-label="more"
-              aria-controls="long-menu"
-              aria-haspopup="true"
-              onClick={handleClick}
-              color="inherit"
-            >
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="fade-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={open}
-              onClose={handleClose}
-              TransitionComponent={Fade}
-            >
-              <MenuItem onClick={handleClose}>Preset Setting</MenuItem>
-              <MenuItem onClick={handleClose}>Pick Card</MenuItem>
-            </Menu> */}
-        </Toolbar>
-      </AppBar>
-      <Container
-          maxWidth="lg"
-          style={{ marginBottom: "3rem", marginTop: "7rem", marginLeft: "7rem" }}
-        >
         <CardDrawer />
-        </Container>
     </Provider>
   );
 };
