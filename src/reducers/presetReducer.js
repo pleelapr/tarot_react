@@ -27,6 +27,19 @@ const initialState = {
 
 const presetReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "INIT":
+      var localPresetsName = localStorage.getItem("presetsNameList");
+      var localPresets = localStorage.getItem("presetsList");
+      console.log(typeof localPresetsName);
+      console.log(typeof localPresets);
+      if(localPresetsName){
+        return {
+          ...state,
+          presets: JSON.parse(localPresets),
+          presetName: JSON.parse(localPresetsName),
+        }
+      }
+
     case "SAVE_PRESET":
       return {
         ...state,

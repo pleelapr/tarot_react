@@ -23,8 +23,9 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import ViewCarouselIcon from '@material-ui/icons/ViewCarousel';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ViewCarouselIcon from "@material-ui/icons/ViewCarousel";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Switch from "@material-ui/core/Switch";
 import "../App.css";
 
 var _ = require("lodash");
@@ -81,22 +82,28 @@ for (var i = 0; i < templateArray.length; i++) {
 const CardDrawer = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  let presetsList = JSON.parse(JSON.stringify(useSelector((state) => state.preset.presets)));
-  console.log(presetsList)
+  let presetsList = JSON.parse(
+    JSON.stringify(useSelector((state) => state.preset.presets))
+  );
+  console.log(presetsList);
   let presetsNameList = useSelector((state) => state.preset.presetName);
   let resultArray = JSON.parse(JSON.stringify(templateArray));
   let stateArray = JSON.parse(JSON.stringify(templateArray));
   const [stateResultArray, setStateResultArray] = useState(resultArray);
   const [presetName, setPresetName] = useState("");
   const [presetSettingStatus, setPresetSettingStatus] = useState(true);
-  const [stateSettingArray, setStateSettingArray] = useState(
-    stateArray
-  );
+  const [stateSettingArray, setStateSettingArray] = useState(stateArray);
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    sessionStorage.setItem("presetsNameList", JSON.stringify(presetsNameList));
-    sessionStorage.setItem("presetsList", JSON.stringify(presetsList));
+    dispatch({
+      type: "INIT",
+    });
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("presetsNameList", JSON.stringify(presetsNameList));
+    localStorage.setItem("presetsList", JSON.stringify(presetsList));
   }, [presetsNameList, presetsList]);
 
   const settingArrayChange = (indexr, indexc) => (e) => {
@@ -275,6 +282,33 @@ const CardDrawer = () => {
 
   return (
     <>
+      <AppBar position="fixed" className={classes.appBar}>
+        <Toolbar>
+          <Typography variant="h5" component="h5">
+            Tarot Flex
+          </Typography>
+          {/* <IconButton
+              aria-label="more"
+              aria-controls="long-menu"
+              aria-haspopup="true"
+              onClick={handleClick}
+              color="inherit"
+            >
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              id="fade-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={open}
+              onClose={handleClose}
+              TransitionComponent={Fade}
+            >
+              <MenuItem onClick={handleClose}>Preset Setting</MenuItem>
+              <MenuItem onClick={handleClose}>Pick Card</MenuItem>
+            </Menu> */}
+        </Toolbar>
+      </AppBar>
       <div
         style={{
           display: "flex",
@@ -300,6 +334,12 @@ const CardDrawer = () => {
                   togglePresetSetting();
                 }}
               >
+                <Switch
+                  checked={presetSettingStatus}
+                  color="primary"
+                  name="checkedB"
+                  inputProps={{ "aria-label": "primary checkbox" }}
+                />
                 <ListItemText primary="Toggle Preset Setting" />
               </ListItem>
               <ListItem
@@ -325,14 +365,19 @@ const CardDrawer = () => {
                     selectPreset(text, index);
                   }}
                 >
-                  <ListItemText primary={text} />
+                  <ListItemText
+                    primary={text}
+                    style={{
+                      color: presetName === text ? colors.blue : colors.black,
+                    }}
+                  />
                 </ListItem>
               ))}
             </List>
           </div>
         </Drawer>
-          {presetSettingStatus && presetSettingComp}
-          {resultTable}
+        {presetSettingStatus && presetSettingComp}
+        {resultTable}
       </div>
     </>
   );
