@@ -33,9 +33,69 @@ const FlexSpacer = styled.div`
   height: 1.25rem;
 `;
 
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     display: "flex",
+//   },
+//   appBar: {
+//     transition: theme.transitions.create(["margin", "width"], {
+//       easing: theme.transitions.easing.sharp,
+//       duration: theme.transitions.duration.leavingScreen,
+//     }),
+//   },
+//   appBarShift: {
+//     width: `calc(100% - ${drawerWidth}px)`,
+//     transition: theme.transitions.create(["margin", "width"], {
+//       easing: theme.transitions.easing.easeOut,
+//       duration: theme.transitions.duration.enteringScreen,
+//     }),
+//     marginRight: drawerWidth,
+//   },
+//   title: {
+//     flexGrow: 1,
+//   },
+//   hide: {
+//     display: "none",
+//   },
+//   drawer: {
+//     width: drawerWidth,
+//     flexShrink: 0,
+//   },
+//   drawerPaper: {
+//     width: drawerWidth,
+//   },
+//   drawerHeader: {
+//     display: "flex",
+//     alignItems: "center",
+//     padding: theme.spacing(0, 1),
+//     // necessary for content to be below app bar
+//     ...theme.mixins.toolbar,
+//     justifyContent: "flex-start",
+//   },
+//   content: {
+//     flexGrow: 1,
+//     padding: theme.spacing(3),
+//     transition: theme.transitions.create("margin", {
+//       easing: theme.transitions.easing.sharp,
+//       duration: theme.transitions.duration.leavingScreen,
+//     }),
+//     marginRight: -drawerWidth,
+//   },
+//   contentShift: {
+//     transition: theme.transitions.create("margin", {
+//       easing: theme.transitions.easing.easeOut,
+//       duration: theme.transitions.duration.enteringScreen,
+//     }),
+//     marginRight: 0,
+//   },
+// }));
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+  },
+  title: {
+    flexGrow: 1,
   },
   appBar: {
     transition: theme.transitions.create(["margin", "width"], {
@@ -51,16 +111,25 @@ const useStyles = makeStyles((theme) => ({
     }),
     marginRight: drawerWidth,
   },
-  title: {
-    flexGrow: 1,
+  drawer: {
+    [theme.breakpoints.up("sm")]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
   },
   hide: {
     display: "none",
   },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
+  toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
   },
@@ -71,6 +140,10 @@ const useStyles = makeStyles((theme) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: "flex-start",
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
   },
   content: {
     flexGrow: 1,
@@ -87,6 +160,10 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginRight: 0,
+  },
+  closeMenuButton: {
+    marginRight: "auto",
+    marginLeft: 0,
   },
 }));
 
@@ -331,22 +408,18 @@ const CardDrawer = () => {
       >
         <Toolbar>
           <Typography variant="h6" noWrap className={classes.title}>
-            Tarot React { (presetName) ? ": " + presetName : "" }
+            Tarot React {presetName ? ": " + presetName : ""}
           </Typography>
-          <IconButton
-            color="inherit"
-            
-            onClick={handlePickCard}
-          >
+          <IconButton color="inherit" onClick={handlePickCard}>
             <ViewCarouselIcon />
           </IconButton>
           <Switch
-              checked={presetSettingStatus}
-              style={{ marginRight:"2rem"}}
-              name="checkedB"
-              inputProps={{ "aria-label": "primary checkbox" }}
-              onChange={togglePresetSetting}
-            />
+            checked={presetSettingStatus}
+            style={{ marginRight: "2rem" }}
+            name="checkedB"
+            inputProps={{ "aria-label": "primary checkbox" }}
+            onChange={togglePresetSetting}
+          />
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -410,7 +483,6 @@ const CardDrawer = () => {
           >
             <Switch
               checked={presetSettingStatus}
-              color="primary"
               name="checkedB"
               inputProps={{ "aria-label": "primary checkbox" }}
             />
